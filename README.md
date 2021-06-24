@@ -1,0 +1,1 @@
+Not my main config. Using chemacs to test different configs. My doom config is buggy, so sometimes I end up using this one.
