@@ -68,7 +68,7 @@
 (straight-use-package 'rainbow-delimiters)
 (straight-use-package 'use-package)
 (straight-use-package 'helpful)
-
+(straight-use-package 'org-super-agenda)
 (straight-use-package
  '(el-patch :type git :host github :repo "dandavison/xenops"))
 (add-hook 'latex-mode-hook #'xenops-mode)
@@ -89,7 +89,7 @@
 (straight-use-package
  '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
 (load-library "nano")
-
+(straight-use-package 'org-bullets)
 
 (use-package dashboard
   :straight t
@@ -150,11 +150,59 @@ assume a filename and skip displaying Dashboard."
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
 (add-hook 'org-shiftdown-final-hook 'windmove-down)
 (add-hook 'org-shiftright-final-hook 'windmove-right)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (setq explicit-shell-file-name "/bin/bash")
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+              (sequence "ROUTINE(r)" "WAITING(w)" "|" "CANCELLED(c)")
+            (sequence "[ ]" "[-]" "[?]" "|" "[X]"))))
+
+(setq org-agenda-prefix-format '((agenda . " %i %?-12t% s")
+				 (todo . " %i ")
+				 (tags . " %i ")
+				 (search . " %i ")))
+(setq-default org-export-with-todo-keywords nil)
+(setq-default org-enforce-todo-dependencies t)
+(setq org-agenda-custom-commands
+      '(("z" "Marcelo view"
+         ((agenda "" ((org-super-agenda-groups
+                       '((:auto-category t)))))))))
+
+
+  ;; ((agenda "" ((org-agenda-span 'day)
+  ;;                     (org-super-agenda-groups
+  ;;                      '((:name "Today"
+  ;;                         :time-grid t
+  ;;                         :date today
+  ;;                         :todo "TODAY"
+  ;;                         :scheduled today
+  ;;                         :order 1)))))
+  ;;         (alltodo "" ((org-agenda-overriding-header "")
+  ;;                      (org-super-agenda-groups
+  ;;                       '(;; Each group has an implicit boolean OR operator between its selectors.
+  ;;                         (:name "Today"
+  ;;                          :deadline today
+  ;;                          :face (:background "black"))
+  ;;                         (:name "Passed deadline"
+  ;;                          :and (:deadline past :todo ("TODO" "[ ]" "[?]" "[-]" "NEXT"))
+  ;;                          :face (:background "#7f1b19"))
+  ;;                         (:name "Work-Tasks"
+  ;;                          :and (:priority>= "B" :category "Work-Tasks" ))
+  ;;                         (:name "Work-Habits"
+  ;;                          :and (:category "Work-Habits" ))
+  ;;                         (:name "Appointments"
+  ;;                          :and (:category "Appointments"))
+  ;;                         (:name "Personal"
+  ;;                          :and (:category "Personal"))
+  ;;                         (:name "Waiting"
+  ;;                          :todo ("WAITING")
+  ;;                          :order 9)
+  ;;                         )))))
+(add-hook 'org-agenda-mode-hook 'org-super-agenda-mode)
 ;; Line spacing, can be 0 for code and 1 or 2 for text
 ; (setq-default line-spacing 0)
 
